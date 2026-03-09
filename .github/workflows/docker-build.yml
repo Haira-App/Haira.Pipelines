@@ -56,7 +56,10 @@ jobs:
             type=raw,value=latest
             type=ref,event=tag
             type=semver,pattern={{version}}
-
+            
+      - name: Create .env file from secret
+        run: echo "${{ secrets.ENVS }}" > .env
+        
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -67,4 +70,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
+
           cache-to: type=gha,mode=max
