@@ -7,7 +7,7 @@ on:
         type: string
         required: true
         default: Dockerfile
-      environmentName: # <-- Novo input para receber o nome do ambiente
+      environmentName:
         type: string
         required: true
 
@@ -18,7 +18,6 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     
-    # É AQUI QUE A MÁGICA ACONTECE AGORA:
     environment: ${{ inputs.environmentName }} 
 
     permissions:
@@ -51,6 +50,10 @@ jobs:
             type=raw,value=latest
             type=ref,event=tag
             type=semver,pattern={{version}}
+
+      # ---> PASSO ADICIONADO: Criando o arquivo .env <---
+      - name: Create .env file
+        run: echo "${{ secrets.ENVS }}" > .env
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
