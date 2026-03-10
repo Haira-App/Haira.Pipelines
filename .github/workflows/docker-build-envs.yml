@@ -7,15 +7,19 @@ on:
         type: string
         required: true
         default: Dockerfile
+      environmentName: # <-- Novo input para receber o nome do ambiente
+        type: string
+        required: true
 
-# Removido AWS_REGION do env global para usar direto da secret do ambiente, 
-# mantendo a flexibilidade se cada ambiente estiver em uma região diferente.
 env:
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    
+    # É AQUI QUE A MÁGICA ACONTECE AGORA:
+    environment: ${{ inputs.environmentName }} 
 
     permissions:
       contents: read
@@ -24,8 +28,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Agora usamos nomes genéricos. O GitHub injetará o valor de HML ou PRD 
-      # automaticamente conforme definido no workflow pai.
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -49,12 +51,6 @@ jobs:
             type=raw,value=latest
             type=ref,event=tag
             type=semver,pattern={{version}}
-
-      # Removi a criação do arquivo .env pois, como discutimos, 
-      # o ideal é injetar via Environment Variables no ECS para manter a imagem limpa.
-      # Se você AINDA precisar dele por algum motivo específico de build, descomente abaixo:
-      # - name: Create .env file from secret
-      #   run: echo "${{ secrets.ENVS }}" > .env
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
