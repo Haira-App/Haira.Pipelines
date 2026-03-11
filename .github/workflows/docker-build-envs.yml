@@ -14,7 +14,7 @@ on:
 env:
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
   ECS_SERVICE: ${{ secrets.ECS_SERVICE}}
-  ECS_CLUSTER: ${{secret.ECS_CLUSTER}}
+  ECS_CLUSTER: ${{ secret.ECS_CLUSTER }}
   ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION }}
   ECS_CONTAINER_NAME: ${{ secrets.ECS_CONTAINER_NAME }}
 
