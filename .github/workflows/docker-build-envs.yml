@@ -16,6 +16,7 @@ env:
   ECS_SERVICE: ${{ secrets.ECS_SERVICE}}
   ECS_CLUSTER: ${{secret.ECS_CLUSTER}}
   ECS_TASK_DEFINITION: ${{ secrets.ECS_TASK_DEFINITION }}
+  ECS_CONTAINER_NAME: ${{ secrets.ECS_CONTAINER_NAME }}
 
 
 jobs:
@@ -79,7 +80,7 @@ jobs:
       - name: Download current task definition
         run: |
           aws ecs describe-task-definition \
-            --task-definition ${{ secrets.ECS_TASK_DEFINITION }} \
+            --task-definition ${{ env.ECS_TASK_DEFINITION }} \
             --query taskDefinition > task-definition.json
 
       - name: Render new task definition
@@ -87,7 +88,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json
-          container-name: ${{ secrets.ECS_CONTAINER_NAME }}
+          container-name: ${{ env.ECS_CONTAINER_NAME }}
           image: ${{ steps.image.outputs.image }}
 
       - name: Deploy ECS task definition
