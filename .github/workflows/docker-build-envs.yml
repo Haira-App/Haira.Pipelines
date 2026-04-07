@@ -74,7 +74,7 @@ jobs:
         run: dotnet restore
 
       - name: Run unit tests
-        run: dotnet test --configuration Release --no-build --verbosity normal
+        run: dotnet test --configuration Release --verbosity normal
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
