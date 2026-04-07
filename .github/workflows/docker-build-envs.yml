@@ -65,6 +65,17 @@ jobs:
       - name: Create .env file
         run: echo "${{ secrets.ENVS }}" > .env
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Run unit tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
